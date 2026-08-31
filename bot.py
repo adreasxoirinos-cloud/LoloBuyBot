@@ -168,7 +168,7 @@ async def rehearsal(interaction: discord.Interaction):
 async def lines(interaction: discord.Interaction, region: app_commands.Choice[str]):
     embed = discord.Embed(title=f"✈️ Recommended Shipping Routes: {region.name}", color=0x9B59B6)
     if region.value == "eu":
-        embed.add_field(name="🥇 Top Recommendation: Any DHL Lines", value="Speed: 8-14 Days\nSafety: 10/10\nNotes: Highly recommended for Europe. It bypasses custom checkpoints safely. Best choice for safety and branded luxury gear.", inline=False)
+        embed.add_field(name="🥇 Top Recommendation: Any DHL Lines", value="Speed: 8-14 Days\nSafety: 10/10\nNotes: Highly recommended for Europe hauls. Bypasses EU customs checkpoints safely. Best choice for safety and branded luxury gear.", inline=False)
     elif region.value == "na":
         embed.add_field(name="🥇 Express Option: EMS (Actual Weight)", value="Speed: 7-12 Days\nSafety: 9/10\nNotes: Fast delivery times across North America. Charged purely by true scale weight, making it great for dense items.", inline=False)
         embed.add_field(name="🥈 Postal Option: USPS Priority / Small Lines", value="Speed: 12-18 Days\nSafety: 9/10\nNotes: Delivers straight through the regular postal network. Extremely reliable and cost-effective for smaller packages under 2kg.", inline=False)
