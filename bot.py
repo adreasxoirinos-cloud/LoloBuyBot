@@ -1,94 +1,101 @@
 import os
+import asyncio
 import discord
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
+from aiohttp import web
 
 # Load environment variables
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-GUILD_ID = discord.Object(id=1543959901393391678)
 
-# Configure bot intents
-intents = discord.Intents.default()
-intents.message_content = True
+# Target Server Configuration Matrix
+GUILD_ID = discord.Object(id=1543959901393391678)
 
 class LoloBuyBot(commands.Bot):
     def __init__(self):
+        intents = discord.Intents.default()
+        intents.message_content = True
         super().__init__(command_prefix="!", intents=intents)
 
     async def on_ready(self):
-        print(f"Logged in as {self.user.name} (ID: {self.user.id})")
-        print("Startup complete. Background global sync skipped to prevent Cloudflare Error 1015.")
+        print(f"Logged in safely as {self.user.name}... Ready!")
+        print("Use !sync in your server to activate application slash commands.")
 
 bot = LoloBuyBot()
 
-# Owner Only Sync Command
+# Web Server Routine to satisfy Render Free Tier
+async def handle(request):
+    return web.Response(text="LoloBuy Bot Alive Matrix Active")
+
+async def start_web_server():
+    app = web.Application()
+    app.router.add_get('/', handle)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    # Read Render's assigned port layout dynamically
+    port = int(os.environ.get("PORT", 10000))
+    site = web.TCPSite(runner, '0.0.0.0', port)
+    await site.start()
+    print(f"Web server routing successfully bound to port {port}")
+
+# Owner manual synchronization loop execution protocol
 @bot.command(name="sync")
 @commands.is_owner()
-async def sync(ctx: commands.Context):
-    """Copies global command tree matrix and registers it directly to the designated Guild ID."""
-    await ctx.send("🔄 Copying command matrix to target Guild...")
+async def sync(ctx):
+    await ctx.send("Starting application command framework synchronization matrix...")
     try:
-        bot.tree.copy_global_to(guild=GUILD_ID)
+        bot.tree.copy_to(guild=GUILD_ID)
         synced = await bot.tree.sync(guild=GUILD_ID)
-        await ctx.send(f"✅ Successfully synced {len(synced)} slash commands to Guild {GUILD_ID.id} for instant rendering.")
+        await ctx.send(f"Successfully registered {len(synced)} slash commands to this server!")
     except Exception as e:
-        await ctx.send(f"❌ Synchronization failed: {e}")
+        await ctx.send(f"Sync failed: {e}")
 
-@sync.error
-async def sync_error(ctx, error):
-    if isinstance(error, commands.NotOwner):
-        await ctx.send("❌ This setup utility is restricted exclusively to the bot owner.")
-
-# /prohibited Slash Command
-@bot.tree.command(name="prohibited", description="View DHL Compliance Logistics Manual guidelines.")
-@app_commands.describe(category="Select an item category to view its transport rules.")
+# Command 1: /prohibited
+@bot.tree.command(name="prohibited", description="Check DHL Compliance Logistics rules.")
+@app_commands.describe(category="Select the cargo type to inspect compliance parameters")
 @app_commands.choices(category=[
     app_commands.Choice(name="Apparel", value="apparel"),
-    app_commands.Choice(name="Bags/Luggage", value="bags"),
-    app_commands.Choice(name="Electronics/Watches", value="electronics"),
+    app_commands.Choice(name="Bags & Luggage", value="bags"),
+    app_commands.Choice(name="Electronics & Watches", value="electronics"),
     app_commands.Choice(name="Cosmetics", value="cosmetics"),
-    app_commands.Choice(name="Food/Medicine", value="food"),
+    app_commands.Choice(name="Food & Medicine", value="food"),
     app_commands.Choice(name="Toys", value="toys"),
-    app_commands.Choice(name="Books/Adult Products", value="adult")
+    app_commands.Choice(name="Books & Adult Products", value="books")
 ])
 async def prohibited(interaction: discord.Interaction, category: app_commands.Choice[str]):
-    embed = discord.Embed(
-        title=f"📦 DHL Logistics Manual: {category.name}",
-        description="Review logistics safety statuses before checking out.",
-        color=discord.Color.orange()
-    )
+    embed = discord.Embed(title=f"📋 DHL Logistics Compliance Matrix: {category.name}", color=0xFFCC00)
     
     if category.value == "apparel":
-        embed.add_field(name="🟢 Transportable", value="Standard unbranded shirts, pants, and socks.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Luxury replicas or designer items (Requires specialized luxury lines).", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Items with hazardous built-in metal decorations.", inline=False)
+        embed.add_field(name="🟢 Transportable", value="Standard fabrics, unbranded clothing, cotton items.", inline=False)
+        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Luxury replicas, branded designer gear.", inline=False)
+        embed.add_field(name="❌ Banned for Transport", value="Wet garments, hazardous industrial textiles.", inline=False)
     elif category.value == "bags":
-        embed.add_field(name="🟢 Transportable", value="Canvas backpacks, un branded nylon wallets.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Branded leather bags (Requires specialized lines to bypass customs checks).", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Bags with large integrated powerbanks.", inline=False)
+        embed.add_field(name="🟢 Transportable", value="Canvas backpacks, unbranded nylon luggage.", inline=False)
+        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Counterfeit luxury leather purses, brand metal clasps.", inline=False)
+        embed.add_field(name="❌ Banned for Transport", value="Bags containing prohibited items or hidden lithium power banks.", inline=False)
     elif category.value == "electronics":
-        embed.add_field(name="🟢 Transportable", value="Passive wires, phone cases without electronic components.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Smartwatches, bluetooth earbuds, devices with built-in lithium batteries.", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Loose lithium ion batteries, high-wattage power banks.", inline=False)
+        embed.add_field(name="🟢 Transportable", value="Cables, non-battery hardware panels.", inline=False)
+        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Built-in lithium battery devices, smartwatches.", inline=False)
+        embed.add_field(name="❌ Banned for Transport", value="Loose standalone power banks, loose cells, uncertified liquids.", inline=False)
     elif category.value == "cosmetics":
-        embed.add_field(name="🟢 Transportable", value="Solid beauty tools, makeup brushes, blending sponges.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Powders, lipsticks, standard creams (Specialized cosmetics line needed).", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Flammable liquids, nail polishes, aerosol sprays, perfumes.", inline=False)
+        embed.add_field(name="🟢 Transportable", value="Solid makeup accessories, dry makeup sponges.", inline=False)
+        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Creams, setting sprays, lip gloss powders.", inline=False)
+        embed.add_field(name="❌ Banned for Transport", value="Flammable aerosol sprays, high-volume industrial chemical containers.", inline=False)
     elif category.value == "food":
-        embed.add_field(name="🟢 Transportable", value="None (Highly restricted across standard airmail networks).", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Sealed non-perishable snacks, tea leaves (Requires specialized food route).", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Raw meat, fresh fruits, liquid medicine, prescription drugs.", inline=False)
+        embed.add_field(name="🟢 Transportable", value="Completely sealed dry goods, snack wafers.", inline=False)
+        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Spices, vacuum-sealed local regional tea items.", inline=False)
+        embed.add_field(name="❌ Banned for Transport", value="Raw meats, fresh vegetables, unverified prescription medicines.", inline=False)
     elif category.value == "toys":
-        embed.add_field(name="🟢 Transportable", value="Plushies, standard plastic building blocks.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Toys with small internal batteries or generic motors.", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Magnetic balls, realistic toy weapons, liquids/slimes.", inline=False)
-    elif category.value == "adult":
-        embed.add_field(name="🟢 Transportable", value="Standard printed reference books, non-restricted literature.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Adult toys without batteries, specialized artistic catalogs.", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Political publications, religious propagation materials, battery adult items.", inline=False)
-        
+        embed.add_field(name="🟢 Transportable", value="Standard plastic building blocks, plushies.", inline=False)
+        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Electronic rc elements, magnets, wired dolls.", inline=False)
+        embed.add_field(name="❌ Banned for Transport", value="Replica weapons, explosive caps, toxic gel beads.", inline=False)
+    elif category.value == "books":
+        embed.add_field(name="🟢 Transportable", value="Standard illustrative prints, non-political paperbacks.", inline=False)
+        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="High-volume heavy weight catalog binding sets.", inline=False)
+        embed.add_field(name="❌ Banned for Transport", value="Illegal adult videos, dangerous political prints.", inline=False)
+
     await interaction.response.send_message(embed=embed)
 
 # Command 2: /coupons
@@ -100,90 +107,74 @@ async def coupons(interaction: discord.Interaction):
         "• **15% OFF** Shipping Coupon\n"
         "• **10% OFF** Secondary Weight Coupon\n"
         "• **$500 Coupon Bundle** for new warehouse users!\n\n"
-        "👉 [Click here to register your account and activate rewards!](https://www.lolobuy.com/index?inviteCode=antog1an)"
+        "👉 [Click here to register your account and activate rewards!](https://lolobuy.com)"
     )
     await interaction.response.send_message(embed=embed)
 
-# /convert Slash Command
-@bot.tree.command(name="convert", description="Convert Chinese Yuan (CNY) into major world currencies.")
-@app_commands.describe(cny="The cost amount in Chinese Yuan (CNY) to convert.")
+# Command 3: /convert
+@bot.tree.command(name="convert", description="Convert Chinese Yuan (CNY) to international baseline metrics.")
+@app_commands.describe(cny="The cost value in Chinese Yuan (e.g. 500)")
 async def convert(interaction: discord.Interaction, cny: float):
-    # Dummy conversion reference rates
-    usd_rate = 0.14
-    eur_rate = 0.13
-    gbp_rate = 0.11
-    
-    usd_val = cny * usd_rate
-    eur_val = cny * eur_rate
-    gbp_val = cny * gbp_rate
+    usd = cny * 0.14
+    eur = cny * 0.13
+    gbp = cny * 0.11
 
-    embed = discord.Embed(
-        title="💱 Currency Conversion Results",
-        description=f"Baseline Reference Conversion for **{cny:.2f} CNY**",
-        color=discord.Color.blue()
-    )
-    embed.add_field(name="🇺🇸 US Dollars", value=f"${usd_val:,.2f}", inline=True)
-    embed.add_field(name="🇪🇺 Euros", value=f"€{eur_val:,.2f}", inline=True)
-    embed.add_field(name="🇬🇧 British Pounds", value=f"£{gbp_val:,.2f}", inline=True)
+    embed = discord.Embed(title="💱 CNY Live Conversion Card", color=0x3498DB)
+    embed.add_field(name="🇨🇳 Chinese Yuan", value=f"**{cny:.2f} CNY**", inline=False)
+    embed.add_field(name="🇺🇸 US Dollar", value=f"${usd:.2f} USD", inline=True)
+    embed.add_field(name="🇪🇺 Euro", value=f"€{eur:.2f} EUR", inline=True)
+    embed.add_field(name="🇬🇧 British Pound", value=f"£{gbp:.2f} GBP", inline=True)
     await interaction.response.send_message(embed=embed)
 
-# /yupoo Slash Command
-@bot.tree.command(name="yupoo", description="View Yupoo Purchasing & Catalog Guide.")
+# Command 4: /yupoo
+@bot.tree.command(name="yupoo", description="Guide on searching catalogs via Yupoo platform engines.")
 async def yupoo(interaction: discord.Interaction):
-    embed = discord.Embed(
-        title="📸 Yupoo Purchasing & Catalog Guide",
-        description="How to safely browse and buy items from seller photo galleries.",
-        color=discord.Color.purple()
+    embed = discord.Embed(title="📸 Yupoo Catalog Navigation Guide", color=0x9B59B6)
+    embed.description = (
+        "1. Browse through your preferred seller's Yupoo image gallery.\n"
+        "2. Copy the item specific product data keys or direct photo title details.\n\n"
+        "⚠️ **CRITICAL WARNING:** Do **NOT** paste raw `yupoo.com` URLs into the main LoloBuy search fields. The engine cannot index them. Instead, extract and submit the valid **Weidian, Taobao, or 1688 link** listed on the seller's page."
     )
-    embed.add_field(name="🔍 Browsing Galleries", value="Find your desired items inside seller galleries and extract the item descriptions/purchasing keys.", inline=False)
-    embed.add_field(name="⚠️ Critical Warning", value="**NEVER paste yupoo.com links directly into the LoloBuy engine.** Doing so will cause order failures.", inline=False)
-    embed.add_field(name="✅ Correct Method", value="Extract and supply valid marketplace URLs such as **Weidian**, **Taobao**, or **1688** links provided by the seller.", inline=False)
     await interaction.response.send_message(embed=embed)
 
-# /track Slash Command
-@bot.tree.command(name="track", description="View Parcel Tracking Portal Sequence.")
+# Command 5: /track
+@bot.tree.command(name="track", description="Learn how to monitor international waybills.")
 async def track(interaction: discord.Interaction):
-    embed = discord.Embed(
-        title="✈️ International Parcel Tracking Sequence",
-        description="Follow these 3 simple steps to monitor your international waybills:",
-        color=discord.Color.teal()
-    )
-    embed.add_field(name="1️⃣ Locate Tracking Code", value="Go to your LoloBuy order profile dashboard and find your assigned international waybill number.", inline=False)
-    embed.add_field(name="2️⃣ Copy the Code", value="Copy the raw waybill alphanumerics without trailing spaces.", inline=False)
-    embed.add_field(name="3️⃣ Track Globally", value="Paste the code into trusted tracking engines like [17track](https://www.17track.net) for real-time validation.", inline=False)
+    embed = discord.Embed(title="📦 3-Step Parcel Tracking Portal Sequence", color=0x5DADE2)
+    embed.add_field(name="Step 1: Get Code", value="Go to your LoloBuy Profile Order panel and extract your international shipment waybill string.", inline=False)
+    embed.add_field(name="Step 2: External Validation", value="Copy that unique alphanumeric sequence code.", inline=False)
+    embed.add_field(name="Step 3: Global Tracking", value="Paste the sequence code directly into automated global parcel data sites like [17track](https://17track.net) for live milestones.", inline=False)
     await interaction.response.send_message(embed=embed)
 
-# /estimator Slash Command
-@bot.tree.command(name="estimator", description="View Shipping Cost Estimation Tool tutorial.")
+# Command 6: /estimator
+@bot.tree.command(name="estimator", description="Shipping Freight Cost Calculation Tutorial.")
 async def estimator(interaction: discord.Interaction):
-    embed = discord.Embed(
-        title="📐 Shipping Cost Estimation Guide",
-        description="Understand how to calculate freight costs before purchasing.",
-        color=discord.Color.blurple()
+    embed = discord.Embed(title="⚖️ Shipping Freight & Volume Cost Estimation", color=0xE67E22)
+    embed.description = (
+        "Before placing your orders, utilize the platform's cost tool:\n\n"
+        "• Weigh parameters are processed based on volumetric mass or true scale values.\n"
+        "• Select your destination country network to filter matching shipping networks.\n"
+        "• Review approximate price speed tier differences between lines before checkout."
     )
-    embed.add_field(name="📊 Freight Calculation", value="Shipping prices are determined using a mix of actual deadweight and volumetric sizing metrics.", inline=False)
-    embed.add_field(name="⏱️ Weight Speeds", value="Fast air lines cost more per gram but deliver quickly, while sea/rail lines provide massive savings for heavy hauls.", inline=False)
-    embed.add_field(name="💡 Strategy", value="Use the estimator tools on the platform to simulate your load weight *before* submitting marketplace orders.", inline=False)
     await interaction.response.send_message(embed=embed)
 
-# /rehearsal Slash Command
-@bot.tree.command(name="rehearsal", description="View Rehearsal Packaging Warehouse Utility instructions.")
+# Command 7: /rehearsal
+@bot.tree.command(name="rehearsal", description="Learn how Warehouse Rehearsal Packaging saves money.")
 async def rehearsal(interaction: discord.Interaction):
-    embed = discord.Embed(
-        title="📦 Rehearsal Packaging Warehouse Utility",
-        description="Learn how to pre-box your haul to save money up front.",
-        color=discord.Color.gold()
+    embed = discord.Embed(title="📦 Rehearsal Packaging Warehouse Optimization", color=0x1ABC9C)
+    embed.description = (
+        "Want to know your true shipping cost upfront? Use rehearsal packing:\n\n"
+        "• Warehouse logistics staff pre-pack your selected cart items into a real box.\n"
+        "• This calculates the **exact physical dimensions and weight metrics** before you pay.\n"
+        "• Bypasses estimated freight overcharges, preventing surprise budget corrections later!"
     )
-    embed.add_field(name="⚙️ Optimization Process", value="Warehouse staff pack your selected items together into a final box *before* you pay final shipping fees.", inline=False)
-    embed.add_field(name="📏 True Dimensions & Sizing", value="This lets you acquire exact baseline weight dimensions and structural size metrics immediately.", inline=False)
-    embed.add_field(name="💰 Bypass Adjustments", value="Using rehearsal packaging helps you avoid unexpected shipping overages or post-payment balance revisions.", inline=False)
     await interaction.response.send_message(embed=embed)
+
+async def main():
+    # Start web server and discord bot together asynchronously
+    await start_web_server()
+    async with bot:
+        await bot.start(TOKEN)
 
 if __name__ == "__main__":
-    if not TOKEN:
-        print("Error: DISCORD_TOKEN is missing from your environment configuration.")
-    else:
-        # Run bot using unbuffered output for cleaner logs on cloud hosts like Render
-        import sys
-        sys.stdout.flush()
-        bot.run(TOKEN)
+    asyncio.run(main())
