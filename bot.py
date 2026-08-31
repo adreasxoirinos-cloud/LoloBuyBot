@@ -41,7 +41,7 @@ async def start_web_server():
 async def sync(ctx):
     await ctx.send("Starting application command framework synchronization matrix...")
     try:
-        bot.tree.copy_to(guild=GUILD_ID)
+        bot.tree.copy_global(guild=GUILD_ID)
         synced = await bot.tree.sync(guild=GUILD_ID)
         await ctx.send(f"Successfully registered {len(synced)} slash commands to this server!")
     except Exception as e:
