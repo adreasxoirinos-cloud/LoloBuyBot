@@ -171,7 +171,67 @@ async def rehearsal(interaction: discord.Interaction):
     await interaction.response.send_message(embed=embed)
 
 async def main():
-    # Start web server and discord bot together asynchronously
+
+# Command 8: /lines
+@bot.tree.command(name="lines", description="Get recommended shipping lines for your destination region.")
+@app_commands.describe(region="Select your shipping destination region")
+@app_commands.choices(region=[
+    app_commands.Choice(name="Europe (EU)", value="eu"),
+    app_commands.Choice(name="United States & Canada (NA)", value="na"),
+    app_commands.Choice(name="United Kingdom (UK)", value="uk")
+])
+async def lines(interaction: discord.Interaction, region: app_commands.Choice[str]):
+    embed = discord.Embed(title=f"✈️ Recommended Shipping Routes: {region.name}", color=0x9B59B6)
+    
+    if region.value == "eu":
+        embed.add_field(name="🥇 Top Choice: LoloBuy Tax-Free (Tariffless)", value="**Speed:** 10-14 Days\n**Safety:** 10/10 (Bypasses custom taxes safely). Best for branded items.", inline=False)
+        embed.add_field(name="🥈 Economy Choice: DHL Packet", value="**Speed:** 14-22 Days\n**Safety:** 8/10. Best for low-weight, unbranded hauls.", inline=False)
+    elif region.value == "na":
+        embed.add_field(name="🥇 Top Choice: KR-EMS (Actual Weight)", value="**Speed:** 7-12 Days\n**Safety:** 9/10. Fast delivery, billed by real mass weight.", inline=False)
+        embed.add_field(name="🥈 Economy Choice: US-Line Small", value="**Speed:** 12-18 Days\n**Safety:** 8/10. Perfect for small packages under 2kg.", inline=False)
+    elif region.value == "uk":
+        embed.add_field(name="🥇 Top Choice: UK Line-T", value="**Speed:** 8-12 Days\n**Safety:** 10/10. Highly stable tracking metrics, royal mail delivery.", inline=False)
+        
+    embed.set_footer(text="Tip: Always buy shipping insurance for your peace of mind!")
+    await interaction.response.send_message(embed=embed)
+
+# Command 9: /volumetric
+@bot.tree.command(name="volumetric", description="Calculate the volumetric package weight used by logistics lines.")
+@app_commands.describe(length="Length of the box in cm", width="Width of the box in cm", height="Height of the box in cm")
+async def volumetric(interaction: discord.Interaction, length: float, width: float, height: float):
+    vol_weight = (length * width * height) / 5000
+    
+    embed = discord.Embed(title="📐 Volumetric Weight Estimation Matrix", color=0xE67E22)
+    embed.description = (
+        f"**Box Dimensions:** {length} x {width} x {height} cm\n\n"
+        f"📊 **Estimated Volumetric Weight:** **{vol_weight:.2f} kg**\n\n"
+        "⚠️ **Logistics Note:** Shipping lines will charge you based on whichever number is **higher**—the true physical scale weight or this volumetric weight calculation!"
+    )
+    await interaction.response.send_message(embed=embed)
+
+# Command 10: /status
+@bot.tree.command(name="status", description="Decode confusing tracking status updates.")
+@app_commands.describe(milestone="Select the tracking update you want explained")
+@app_commands.choices(milestone=[
+    app_commands.Choice(name="Handed over to Airline / Departed", value="airline"),
+    app_commands.Choice(name="Inbound Customs / Retained", value="customs"),
+    app_commands.Choice(name="Arrived at Sorting Hub", value="hub")
+])
+async def status(interaction: discord.Interaction, milestone: app_commands.Choice[str]):
+    embed = discord.Embed(title=f"🔍 Tracking Breakdown: {milestone.name}", color=0x34495E)
+    
+    if milestone.value == "airline":
+        embed.description = "✈️ **What it means:** Your package has passed physical security checks and is loaded on an airplane or currently mid-flight over the ocean. It will not update again until it lands in your home country!"
+    elif milestone.value == "customs":
+        embed.description = "🛃 **What it means:** Your parcel is being scanned by border control agents. This is 100% normal. Most packages are processed and released automatically within 24 to 72 hours."
+    elif milestone.value == "hub":
+        embed.description = "🏢 **What it means:** Your parcel has reached a regional transport warehouse facility. It is being sorted into a delivery truck heading directly to your local area zip code."
+        
+    await interaction.response.send_message(embed=embed)
+
+
+   
+ # Start web server and discord bot together asynchronously
     await start_web_server()
     async with bot:
         await bot.start(TOKEN)
