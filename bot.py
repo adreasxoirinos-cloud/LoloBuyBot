@@ -36,16 +36,18 @@ async def start_web_server():
     await site.start()
     print(f"Web server routing successfully bound to port {port}")
 
+# Owner manual synchronization loop execution protocol
 @bot.command(name="sync")
 @commands.is_owner()
 async def sync(ctx):
     await ctx.send("Starting application command framework synchronization matrix...")
     try:
-        bot.tree.copy_global(guild=GUILD_ID)
+        # Pass the server ID straight into the sync mechanism directly
         synced = await bot.tree.sync(guild=GUILD_ID)
         await ctx.send(f"Successfully registered {len(synced)} slash commands to this server!")
     except Exception as e:
         await ctx.send(f"Sync failed: {e}")
+
 
 @bot.tree.command(name="prohibited", description="Check DHL Compliance Logistics rules.")
 @app_commands.describe(category="Select the cargo type to inspect compliance parameters")
