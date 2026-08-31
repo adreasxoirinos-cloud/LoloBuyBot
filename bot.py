@@ -168,15 +168,46 @@ async def rehearsal(interaction: discord.Interaction):
 ])
 async def lines(interaction: discord.Interaction, region: app_commands.Choice[str]):
     embed = discord.Embed(title=f"✈️ Recommended Shipping Routes: {region.name}", color=0x9B59B6)
+    
     if region.value == "eu":
-        embed.add_field(name="🥇 Top Choice: LoloBuy Tax-Free (Tariffless)", value="Speed: 10-14 Days\nSafety: 10/10 (Bypasses custom taxes safely). Best for branded items.", inline=False)
-        embed.add_field(name="🥈 Economy Choice: DHL Packet", value="Speed: 14-22 Days\nSafety: 8/10. Best for low-weight, unbranded hauls.", inline=False)
+        embed.add_field(name="🥇 Top Recommendation: Any DHL Tax-Free / Tariffless Lines", value="**Speed:** 8-14 Days\n**Safety:** 10/10\n**Notes:** Highly recommended for Europe. It bypasses custom tax checkpoints completely. Best choice for safety and branded luxury gear.", inline=False)
     elif region.value == "na":
-        embed.add_field(name="🥇 Top Choice: KR-EMS (Actual Weight)", value="Speed: 7-12 Days\nSafety: 9/10. Fast delivery, billed by real mass weight.", inline=False)
-        embed.add_field(name="🥈 Economy Choice: US-Line Small", value="Speed: 12-18 Days\nSafety: 8/10. Perfect for small packages under 2kg.", inline=False)
+        embed.add_field(name="🥇 Express Option: EMS (Actual Weight)", value="**Speed:** 7-12 Days\n**Safety:** 9/10\n**Notes:** Fast delivery times across North America. Charged purely by true scale weight, making it great for dense items.", inline=False)
+        embed.add_field(name="🥈 Postal Option: USPS Priority / Small Lines", value="**Speed:** 12-18 Days\n**Safety:** 9/10\n**Notes:** Delivers straight through the regular postal network. Extremely reliable and cost-effective for smaller packages under 2kg.", inline=False)
     elif region.value == "uk":
-        embed.add_field(name="🥇 Top Choice: UK Line-T", value="Speed: 8-12 Days\nSafety: 10/10. Highly stable tracking metrics, royal mail delivery.", inline=False)
-    embed.set_footer(text="Tip: Always buy shipping insurance for your peace of mind!")
+        embed.add_field(name="🥇 Top Recommendation: Royal Mail / UK Line-T", value="**Speed:** 8-12 Days\n**Safety:** 10/10\n**Notes:** Highly stable domestic shipping routes. The package will pass sorting yards smoothly and be hand-delivered by your local mail carrier.", inline=False)
+        
+    embed.set_footer(text="Tip: Always check your parcel weight thresholds and buy shipping insurance!")
+    await interaction.response.send_message(embed=embed)
+
+# Command 10: /status
+@bot.tree.command(name="status", description="Decode confusing tracking updates from your shipping line.")
+@app_commands.describe(milestone="Select the exact tracking update string you want explained")
+@app_commands.choices(milestone=[
+    app_commands.Choice(name="Instruction data provided electronically", value="electronic"),
+    app_commands.Choice(name="Flight landed, board dismantled and cleared", value="landed"),
+    app_commands.Choice(name="Picked up, undergoing customs clearance", value="customs")
+])
+async def status(interaction: discord.Interaction, milestone: app_commands.Choice[str]):
+    embed = discord.Embed(title=f"🔍 Tracking Breakdown: Update Explained", color=0x34495E)
+    
+    if milestone.value == "electronic":
+        embed.add_field(
+            name="📝 Instruction data provided by sender electronically",
+            value="**What it means:** LoloBuy or your shipping agent has successfully generated your tracking number and packing labels in their system. The physical package is sitting safely in the warehouse loading bay waiting for the logistics truck to come pick it up. Don't worry if it doesn't move for 24-48 hours—it's completely normal [1]!"
+        )
+    elif milestone.value == "landed":
+        embed.add_field(
+            name="🛬 The flight landed, and the board was dismantled and cleared",
+            value="**What it means:** The cargo plane carrying your haul has officially touched down in your destination country. The airport ground crew has unloaded the massive shipping pallets (the 'board') and unpacked them. Your individual box has passed initial airport sorting and is moving to the next stage [1]."
+        )
+    elif milestone.value == "customs":
+        embed.add_field(
+            name="🛃 The goods have been picked up and are currently undergoing customs clearance",
+            value="**What it means:** Your parcel has reached the local country border authority. Customs officers are checking the paperwork and declaration metrics to clear it for domestic entry. This happens to 100% of international imports and usually completes automatically within 1 to 3 days [1]."
+        )
+        
+    embed.set_footer(text="This general breakdown applies to DHL, EMS, Royal Mail, and other international networks.")
     await interaction.response.send_message(embed=embed)
 
 # Command 9: /volumetric
