@@ -157,9 +157,6 @@ async def rehearsal(interaction: discord.Interaction):
 
 @bot.tree.command(name="lines", description="Get recommended shipping lines for your destination region.")
 @app_commands.describe(region="Select your shipping destination region")
-# Command 8: /lines
-@bot.tree.command(name="lines", description="Get recommended shipping lines for your destination region.")
-@app_commands.describe(region="Select your shipping destination region")
 @app_commands.choices(region=[
     app_commands.Choice(name="Europe (EU)", value="eu"),
     app_commands.Choice(name="United States & Canada (NA)", value="na"),
