@@ -42,9 +42,10 @@ async def start_web_server():
 async def sync(ctx):
     await ctx.send("Starting application command framework synchronization matrix...")
     try:
-        # Pass the server ID straight into the sync mechanism directly
+        # Copy the master command matrix array directly onto your specific server
+        bot.tree.copy_global_to(guild=GUILD_ID)
         synced = await bot.tree.sync(guild=GUILD_ID)
-        await ctx.send(f"Successfully registered {len(synced)} slash commands to this server!")
+        await ctx.send(f"Successfully registered {len(synced)} slash commands directly to this server!")
     except Exception as e:
         await ctx.send(f"Sync failed: {e}")
 
