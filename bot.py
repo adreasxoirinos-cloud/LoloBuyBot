@@ -47,58 +47,58 @@ async def sync(ctx):
     except Exception as e:
         await ctx.send(f"Sync failed: {e}")
 
-@bot.tree.command(name="prohibited", description="Check DHL Compliance Logistics rules.")
-@app_commands.describe(category="Select the cargo type to inspect compliance parameters")
+@bot.tree.command(name="prohibited", description="Check standard international logistics shipping guidelines.")
+@app_commands.describe(category="Select the logistics category to check general shipping rules")
 @app_commands.choices(category=[
     app_commands.Choice(name="Apparel", value="apparel"),
     app_commands.Choice(name="Bags & Luggage", value="bags"),
-    app_commands.Choice(name="Electronics & Watches", value="electronics"),
+    app_commands.Choice(name="Electronics", value="electronics"),
     app_commands.Choice(name="Cosmetics", value="cosmetics"),
-    app_commands.Choice(name="Food & Medicine", value="food"),
-    app_commands.Choice(name="Toys", value="toys"),
-    app_commands.Choice(name="Books & Adult Products", value="books")
+    app_commands.Choice(name="Food Items", value="food"),
+    app_commands.Choice(name="Toys & Models", value="toys"),
+    app_commands.Choice(name="Printed Material", value="books")
 ])
 async def prohibited(interaction: discord.Interaction, category: app_commands.Choice[str]):
-    embed = discord.Embed(title=f"📋 DHL Logistics Compliance Matrix: {category.name}", color=0xFFCC00)
+    embed = discord.Embed(title=f"📋 Logistics Guideline Matrix: {category.name}", color=0xFFCC00)
     if category.value == "apparel":
-        embed.add_field(name="🟢 Transportable", value="Standard fabrics, unbranded clothing, cotton items.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Luxury replicas, branded designer gear.", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Wet garments, hazardous industrial textiles.", inline=False)
+        embed.add_field(name="🟢 Standard Route Items", value="Standard everyday fabrics, unbranded clothing, and basic cotton textiles.", inline=False)
+        embed.add_field(name="⚠️ Specialized Cargo Notes", value="Items requiring specific packaging adjustments based on weight or thickness parameters.", inline=False)
+        embed.add_field(name="❌ Restricted/Banned", value="Wet garments, hazardous industrial fabrics, or items failing standard carrier safety guidelines.", inline=False)
     elif category.value == "bags":
-        embed.add_field(name="🟢 Transportable", value="Canvas backpacks, unbranded nylon luggage.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Counterfeit luxury leather purses, brand metal clasps.", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Bags containing prohibited items or hidden lithium power banks.", inline=False)
+        embed.add_field(name="🟢 Standard Route Items", value="Canvas backpacks, unbranded nylon pouches, basic travel luggage packages.", inline=False)
+        embed.add_field(name="⚠️ Specialized Cargo Notes", value="Bags with heavy metal ornaments or rigid structures that impact packing density.", inline=False)
+        embed.add_field(name="❌ Restricted/Banned", value="Luggage carrying integrated power banks or unverified internal electronic battery compartments.", inline=False)
     elif category.value == "electronics":
-        embed.add_field(name="🟢 Transportable", value="Cables, non-battery hardware panels.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Built-in lithium battery devices, smartwatches.", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Loose standalone power banks, loose cells, uncertified liquids.", inline=False)
+        embed.add_field(name="🟢 Standard Route Items", value="Simple data cables, basic hardware panels, and non-battery accessories.", inline=False)
+        embed.add_field(name="⚠️ Specialized Cargo Notes", value="Devices with built-in lithium batteries or wireless network broadcasting components.", inline=False)
+        embed.add_field(name="❌ Restricted/Banned", value="Loose standalone power banks, hazardous raw cells, or uncertified electrical hardware.", inline=False)
     elif category.value == "cosmetics":
-        embed.add_field(name="🟢 Transportable", value="Solid makeup accessories, dry makeup sponges.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Creams, setting sprays, lip gloss powders.", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Flammable aerosol sprays, high-volume industrial chemical containers.", inline=False)
+        embed.add_field(name="🟢 Standard Route Items", value="Solid makeup applications, brushes, dry synthetic sponges, and clean tools.", inline=False)
+        embed.add_field(name="⚠️ Specialized Cargo Notes", value="Liquid products, setting sprays, dense creams, and fine loose cosmetic powders.", inline=False)
+        embed.add_field(name="❌ Restricted/Banned", value="Flammable pressurized aerosol cans or unverified industrial chemical compounds.", inline=False)
     elif category.value == "food":
-        embed.add_field(name="🟢 Transportable", value="Completely sealed dry goods, snack wafers.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Spices, vacuum-sealed local regional tea items.", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Raw meats, fresh vegetables, unverified prescription medicines.", inline=False)
+        embed.add_field(name="🟢 Standard Route Items", value="Completely sealed, shelf-stable commercial dry goods and crisp snack biscuits.", inline=False)
+        embed.add_field(name="⚠️ Specialized Cargo Notes", value="Vacuum-sealed localized dry tea leaves or dry regional cooking spices.", inline=False)
+        embed.add_field(name="❌ Banned Items", value="Perishable raw meats, fresh produce, and unverified medical formulations.", inline=False)
     elif category.value == "toys":
-        embed.add_field(name="🟢 Transportable", value="Standard plastic building blocks, plushies.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="Electronic rc elements, magnets, wired dolls.", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Replica weapons, explosive caps, toxic gel beads.", inline=False)
+        embed.add_field(name="🟢 Standard Route Items", value="Standard plastic interlocking building bricks, standard models, and clean plush dolls.", inline=False)
+        embed.add_field(name="⚠️ Specialized Cargo Notes", value="Remote control models containing wired circuitry elements or integrated magnets.", inline=False)
+        embed.add_field(name="❌ Banned Items", value="Logistics-banned replica weapon models or uncertified toxic fluid toy accessories.", inline=False)
     elif category.value == "books":
-        embed.add_field(name="🟢 Transportable", value="Standard illustrative prints, non-political paperbacks.", inline=False)
-        embed.add_field(name="⚠️ Sensitive/Restricted Cargo", value="High-volume heavy weight catalog binding sets.", inline=False)
-        embed.add_field(name="❌ Banned for Transport", value="Illegal adult videos, dangerous political prints.", inline=False)
+        embed.add_field(name="🟢 Standard Route Items", value="Standard print publications, commercial catalogs, and non-restricted paperbacks.", inline=False)
+        embed.add_field(name="⚠️ Specialized Cargo Notes", value="Heavy volume publication collection binders subject to line weight limits.", inline=False)
+        embed.add_field(name="❌ Banned Items", value="Materials violating carrier shipping transport rules or destination entry regulations.", inline=False)
     await interaction.response.send_message(embed=embed)
 
-@bot.tree.command(name="coupons", description="View registration rewards and affiliate accelerator.")
+@bot.tree.command(name="coupons", description="View platform registration rewards.")
 async def coupons(interaction: discord.Interaction):
     embed = discord.Embed(title="🎁 LoloBuy Welcome Package & Rewards", color=0x2ECC71)
     embed.description = (
-        "Join today and claim your platform registration gifts:\n\n"
+        "New users can claim their platform registration gifts upon signing up:\n\n"
         "• **15% OFF** Shipping Coupon\n"
         "• **10% OFF** Secondary Weight Coupon\n"
-        "• **$500 Coupon Bundle** for new warehouse users!\n\n"
-        "👉 [Click here to register your account and activate rewards!](https://www.lolobuy.com/index?inviteCode=antog1an)"
+        "• **$500 Coupon Bundle** for warehouse operations!\n\n"
+        "👉 [Click here to register your account and activate rewards!](https://lolobuy.com)"
     )
     await interaction.response.send_message(embed=embed)
 
@@ -108,73 +108,76 @@ async def convert(interaction: discord.Interaction, cny: float):
     usd = cny * 0.14
     eur = cny * 0.13
     gbp = cny * 0.11
-    embed = discord.Embed(title="💱 CNY Live Conversion Card", color=0x3498DB)
+    embed = discord.Embed(title="💱 CNY Reference Conversion Card", color=0x3498DB)
     embed.add_field(name="🇨🇳 Chinese Yuan", value=f"**{cny:.2f} CNY**", inline=False)
-    embed.add_field(name="🇺🇸 US Dollar", value=f"${usd:.2f} USD", inline=True)
-    embed.add_field(name="🇪🇺 Euro", value=f"€{eur:.2f} EUR", inline=True)
-    embed.add_field(name="🇬🇧 British Pound", value=f"£{gbp:.2f} GBP", inline=True)
+    embed.add_field(name="🇺🇸 US Dollar (Ref)", value=f"${usd:.2f} USD", inline=True)
+    embed.add_field(name="🇪🇺 Euro (Ref)", value=f"€{eur:.2f} EUR", inline=True)
+    embed.add_field(name="🇬🇧 British Pound (Ref)", value=f"£{gbp:.2f} GBP", inline=True)
     await interaction.response.send_message(embed=embed)
 
-@bot.tree.command(name="yupoo", description="Guide on searching catalogs via Yupoo platform engines.")
+@bot.tree.command(name="yupoo", description="Informational guide regarding standard marketplace engine link formatting.")
 async def yupoo(interaction: discord.Interaction):
-    embed = discord.Embed(title="📸 Yupoo Catalog Navigation Guide", color=0x9B59B6)
+    embed = discord.Embed(title="📸 Marketplace Link Information Guide", color=0x9B59B6)
     embed.description = (
-        "1. Browse through your preferred seller's Yupoo image gallery.\n"
-        "2. Copy the item specific product data keys or direct photo title details.\n\n"
-        "⚠️ **CRITICAL WARNING:** Do **NOT** paste raw `yupoo.com` URLs into the main LoloBuy search fields. The engine cannot index them. Instead, extract and submit the valid **Weidian, Taobao, or 1688 link** listed on the seller's page."
+        "When submitting order entries into the LoloBuy system layout:\n\n"
+        "1. Ensure you extract the active checkout item links provided by sellers.\n"
+        "2. Paste standard store links into the dashboard routing tool.\n\n"
+        "⚠️ **Logistics Note:** The LoloBuy search field handles standard direct checkout catalog links (such as **Weidian, Taobao, or 1688** URLs). Ensure you submit compatible destination links during ordering panels."
     )
     await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="track", description="Learn how to monitor international waybills.")
 async def track(interaction: discord.Interaction):
     embed = discord.Embed(title="📦 3-Step Parcel Tracking Portal Sequence", color=0x5DADE2)
-    embed.add_field(name="Step 1: Get Code", value="Go to your LoloBuy Profile Order panel and extract your international shipment waybill string.", inline=False)
-    embed.add_field(name="Step 2: External Validation", value="Copy that unique alphanumeric sequence code.", inline=False)
-    embed.add_field(name="Step 3: Global Tracking", value="Paste the sequence code directly into automated global parcel data sites like [17track](https://17track.net) for live milestones.", inline=False)
+    embed.add_field(name="Step 1: Get Code", value="Navigate to your LoloBuy profile dashboard order panel to check your tracking waybill code.", inline=False)
+    embed.add_field(name="Step 2: Copy Code", value="Copy the unique alphanumeric routing sequence string provided for your order.", inline=False)
+    embed.add_field(name="Step 3: Verification", value="Input the tracking string into public shipment checking sites like [17track](https://17track.net) for milestone updates.", inline=False)
     await interaction.response.send_message(embed=embed)
 
 @bot.tree.command(name="estimator", description="Shipping Freight Cost Calculation Tutorial.")
 async def estimator(interaction: discord.Interaction):
     embed = discord.Embed(title="⚖️ Shipping Freight & Volume Cost Estimation", color=0xE67E22)
     embed.description = (
-        "Before placing your orders, utilize the platform's cost tool:\n\n"
-        "• Weigh parameters are processed based on volumetric mass or true scale values.\n"
-        "• Select your destination country network to filter matching shipping networks.\n"
-        "• Review approximate price speed tier differences between lines before checkout."
+        "Before finalizing parcel submissions, utilize the platform's cost tool:\n\n"
+        "• Weight parameters are processed using volumetric mass or true scale values depending on line metrics.\n"
+        "• Select your destination country network to view matching available lines.\n"
+        "• Review approximate price speed tier differences on the official platform page before dispatch."
     )
     await interaction.response.send_message(embed=embed)
 
-@bot.tree.command(name="rehearsal", description="Learn how Warehouse Rehearsal Packaging saves money.")
+    )
+    await interaction.response.send_message(embed=embed)
+
+@bot.tree.command(name="rehearsal", description="Learn how Warehouse Rehearsal Packaging processes function.")
 async def rehearsal(interaction: discord.Interaction):
-    embed = discord.Embed(title="📦 Rehearsal Packaging Warehouse Optimization", color=0x1ABC9C)
+    embed = discord.Embed(title="📦 Rehearsal Packaging Warehouse Process", color=0x1ABC9C)
     embed.description = (
-        "Want to know your true shipping cost upfront? Use rehearsal packing:\n\n"
-        "• Warehouse logistics staff pre-pack your selected cart items into a real box.\n"
-        "• This calculates the **exact physical dimensions and weight metrics** before you pay.\n"
-        "• Bypasses estimated freight overcharges, preventing surprise budget corrections later!"
+        "Want to check your verified parcel dimensions upfront? You can opt for rehearsal metrics:\n\n"
+        "• Warehouse logistics staff pre-pack your selected cart items into a real container box.\n"
+        "• This determines the **physical dimensions and true weight metrics** ahead of final billing.\n"
+        "• Helps you verify package profiles before submitting final courier choices."
     )
     await interaction.response.send_message(embed=embed)
 
-@bot.tree.command(name="lines", description="Get recommended shipping lines for your destination region.")
-@app_commands.describe(region="Select your shipping destination region")
+@bot.tree.command(name="lines", description="View standard shipping route information by region.")
+@app_commands.describe(region="Select the geographic region to review available network formats")
 @app_commands.choices(region=[
     app_commands.Choice(name="Europe (EU)", value="eu"),
     app_commands.Choice(name="United States & Canada (NA)", value="na"),
     app_commands.Choice(name="United Kingdom (UK)", value="uk")
 ])
 async def lines(interaction: discord.Interaction, region: app_commands.Choice[str]):
-    embed = discord.Embed(title=f"✈️ Recommended Shipping Routes: {region.name}", color=0x9B59B6)
+    embed = discord.Embed(title=f"✈️ Shipping Network General Profiles: {region.name}", color=0x9B59B6)
     if region.value == "eu":
-        embed.add_field(name="🥇 Top Recommendation: Any DHL Lines", value="Speed: 8-14 Days\nSafety: 10/10\nNotes: Highly recommended for Europe hauls. Bypasses EU customs checkpoints safely. Best choice for safety and branded luxury gear.", inline=False)
+        embed.add_field(name="📦 DHL Logistics Routes", value="**General Speed:** 8-14 Days\n**Features:** Heavily utilized across continental Europe. Offers stable tracking data streams. Check the active shipping panel for live estimates.", inline=False)
     elif region.value == "na":
-        embed.add_field(name="🥇 Express Option: EMS (Actual Weight)", value="Speed: 7-12 Days\nSafety: 9/10\nNotes: Fast delivery times across North America. Charged purely by true scale weight, making it great for dense items.", inline=False)
-        embed.add_field(name="🥈 Postal Option: USPS Priority / Small Lines", value="Speed: 12-18 Days\nSafety: 9/10\nNotes: Delivers straight through the regular postal network. Extremely reliable and cost-effective for smaller packages under 2kg.", inline=False)
+        embed.add_field(name="📦 EMS Route Types", value="**General Speed:** 7-12 Days\n**Features:** Regular shipping line tracking available across North America. Charged based on actual scale weight properties.", inline=False)
+        embed.add_field(name="📦 Postal Line Options", value="**General Speed:** 12-18 Days\n**Features:** Standard carrier network processing, frequently useful for smaller package allocations under 2kg.", inline=False)
     elif region.value == "uk":
-        embed.add_field(name="🥇 Top Recommendation: Royal Mail", value="Speed: 8-12 Days\nSafety: 10/10\nNotes: Highly stable domestic shipping routes. The package will pass sorting yards smoothly and be hand-delivered by your local mail carrier.", inline=False)
-    embed.set_footer(text="Tip: Always buy shipping insurance for your peace of mind!")
+        embed.add_field(name="📦 Royal Mail Route Types", value="**General Speed:** 8-12 Days\n**Features:** Standard regional domestic network options providing reliable delivery handoffs across the UK region.", inline=False)
+    embed.set_footer(text="Notice: Delivery speeds are estimates. Always consult the live platform calculator for up-to-date regional values.")
     await interaction.response.send_message(embed=embed)
 
-# Command 9: /volumetric
 @bot.tree.command(name="volumetric", description="Calculate the volumetric package weight used by logistics lines.")
 @app_commands.describe(length="Length of the box in cm", width="Width of the box in cm", height="Height of the box in cm")
 async def volumetric(interaction: discord.Interaction, length: float, width: float, height: float):
@@ -183,11 +186,10 @@ async def volumetric(interaction: discord.Interaction, length: float, width: flo
     embed.description = (
         f"Box Dimensions: {length} x {width} x {height} cm\n\n"
         f"📊 Estimated Volumetric Weight: {vol_weight:.2f} kg\n\n"
-        "⚠️ Logistics Note: Shipping lines will charge you based on whichever number is higher—the true physical scale weight or this volumetric weight calculation!"
+        "⚠️ Logistics Note: International carriers process shipping freight bills using whichever metric is higher between the true physical weight and this volumetric calculation."
     )
     await interaction.response.send_message(embed=embed)
 
-# Command 10: /status
 @bot.tree.command(name="status", description="Decode confusing tracking status updates.")
 @app_commands.describe(milestone="Select the tracking update you want explained")
 @app_commands.choices(milestone=[
@@ -200,22 +202,21 @@ async def status(interaction: discord.Interaction, milestone: app_commands.Choic
     if milestone.value == "electronic":
         embed.add_field(
             name="📝 Instruction data provided electronically",
-            value="What it means: LoloBuy or your shipping agent has successfully generated your tracking number and packing labels in their system. The physical package is sitting safely in the warehouse loading bay waiting for the logistics truck to come pick it up. Don't worry if it doesn't move for 24-48 hours—it's completely normal!"
+            value="What it means: The shipping label data has been logged into the logistics network system. The physical parcel is processing inside the outbound distribution center waiting for transportation vehicle handoffs. Normal processing time applies."
         )
     elif milestone.value == "landed":
         embed.add_field(
             name="🛬 The flight landed, and the board was dismantled and cleared",
-            value="What it means: The cargo plane carrying your haul has officially touched down in your destination country. The airport ground crew has unloaded the massive shipping pallets (the 'board') and unpacked them. Your individual box has passed initial airport sorting and is moving to the next stage."
+            value="What it means: The transit vehicle carrying the batch has arrived at the destination airport facility. Ground crews have unbundled the bulk pallet frameworks and checking individual parcels into sorting hubs."
         )
     elif milestone.value == "customs":
         embed.add_field(
             name="🛃 The goods have been picked up and are currently undergoing customs clearance",
-            value="What it means: Your parcel has reached the local country border authority. Customs officers are checking the paperwork and declaration metrics to clear it for domestic entry. This happens to 100% of international imports and usually completes automatically within 1 to 3 days."
+            value="What it means: The import lot is passing review checks conducted by localized regional customs authorities. This is a baseline requirement for international freight packages and typical sorting time frames apply."
         )
-    embed.set_footer(text="This general breakdown applies to DHL, EMS, Royal Mail, and other international networks.")
+    embed.set_footer(text="This general breakdown applies to standard international shipping workflows.")
     await interaction.response.send_message(embed=embed)
 
-# Core Execution Runtime Block
 async def main():
     await start_web_server()
     async with bot:
