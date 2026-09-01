@@ -98,7 +98,7 @@ async def coupons(interaction: discord.Interaction):
         "• **15% OFF** Shipping Coupon\n"
         "• **10% OFF** Secondary Weight Coupon\n"
         "• **$500 Coupon Bundle** for new warehouse users!\n\n"
-        "👉 [Click here to register your account and activate rewards!](https://lolobuy.com)"
+        "👉 [Click here to register your account and activate rewards!](https://www.lolobuy.com/index?inviteCode=antog1an)"
     )
     await interaction.response.send_message(embed=embed)
 
